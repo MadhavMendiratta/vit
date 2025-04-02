@@ -3,10 +3,22 @@ import { ArrowRight, Building, Map, Search, LogIn } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import SearchBox from "@/components/search-box"
 
+// Image mapping function for buildings
+function getBuildingImagePath(buildingId: string): string {
+  const imageMap: Record<string, string> = {
+    "CDMM": "/images/buildings/cdmm.jpg",
+    "GDN": "/images/buildings/gdn.jpg", 
+    "SMV": "/images/buildings/smv.jpg"
+  };
+  
+  // Return the specific image or a fallback with building name as text
+  return imageMap[buildingId] || `/placeholder.svg?height=400&width=600&text=${buildingId}`;
+}
+
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Hero Section */}
+      {/* Hero Section - KEEPING ORIGINAL BACKGROUND */}
       <section className="relative">
         <div className="absolute inset-0 bg-black/60 z-10" />
         <div
@@ -50,7 +62,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Buildings Preview */}
+      {/* Buildings Preview - UPDATED WITH UNIQUE IMAGES */}
       <section className="py-16 bg-gray-950">
         <div className="container px-4 md:px-6 mx-auto">
           <h2 className="text-3xl font-bold text-white text-center mb-12">Our Campus Buildings</h2>
@@ -61,7 +73,7 @@ export default function Home() {
                   <div className="h-48 bg-gray-800 relative overflow-hidden">
                     <div
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-                      style={{ backgroundImage: `url('/placeholder.svg?height=400&width=600&text=${building}')` }}
+                      style={{ backgroundImage: `url('${getBuildingImagePath(building)}')` }}
                     />
                   </div>
                   <div className="p-6">

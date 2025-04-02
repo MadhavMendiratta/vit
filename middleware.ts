@@ -39,7 +39,13 @@ export async function middleware(request: NextRequest) {
     path === "/quick-search" ||
     path.startsWith("/api/protected");
   
+  // Add specific check for navigation and building pages
+  const isNavigationOrBuilding = path.startsWith("/navigation") || path.startsWith("/buildings");
+  
   console.log(`[MIDDLEWARE STATUS] Path: ${path}, Public: ${isPublicPath}, Protected: ${isProtectedPath}`);
+  if (isNavigationOrBuilding) {
+    console.log(`[🔍 CRITICAL PATH] Navigation or Building path detected: ${path}`);
+  }
 
   // Get token with debugging
   let token;
@@ -51,6 +57,19 @@ export async function middleware(request: NextRequest) {
   } catch (e) {
     console.error(`[AUTH ERROR] Failed to get token: ${e}`);
     token = null;
+  }
+  
+  // Force redirect for navigation and building routes without valid token
+  if (isNavigationOrBuilding && !token) {
+    console.log(`[🛑 FORCED REDIRECT] Navigation/Building path without auth: ${path}`);
+    const loginUrl = new URL('/auth/login', request.url);
+    loginUrl.searchParams.set("callbackUrl", request.url);
+    loginUrl.searchParams.set("source", "critical-path");
+    
+    const response = NextResponse.redirect(loginUrl);
+    response.headers.set("X-Middleware-Cache", "no-cache");
+    response.headers.set("X-Auth-Required", "true");
+    return response;
   }
   
   console.log(`[AUTH CHECK] Token exists: ${!!token}, Path: ${path}`);
@@ -94,3 +113,13 @@ export const config = {
     '/',
   ],
 };
+
+
+
+
+
+
+
+
+
+
