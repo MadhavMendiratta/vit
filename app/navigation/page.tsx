@@ -286,18 +286,53 @@ export default function NavigationPage() {
                 </Button>
               </div>
               <div className="p-6">
-                <div className="mb-6">
-                  <h3 className="text-lg font-medium mb-2">External Navigation</h3>
-                  <div className="aspect-video bg-gray-800 rounded-lg flex items-center justify-center">
-                    <div className="text-center">
-                      <p className="text-gray-400 mb-2">Google Maps Integration</p>
-                      <p className="text-xs text-gray-500">
-                        (External navigation will be integrated with Google Maps API)
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
+  <div className="mb-6">
+    <h3 className="text-lg font-medium mb-2">External Navigation</h3>
+    <div className="aspect-video bg-gray-800 rounded-lg flex items-center justify-center">
+      <div className="w-full flex justify-center">
+        {/* Dynamic iframe selection based on building */}
+        {selectedBuilding === "smv" && (
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.0409092040786!2d79.15509847358898!3d12.969234114933142!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bad479f7f57cb41%3A0xca622aae338c108f!2sSMV!5e0!3m2!1sen!2sin!4v1743598427671!5m2!1sen!2sin"
+            width="723"
+            height="450"
+            className="border-0 rounded-lg shadow-lg"
+            loading="lazy"
+            title="SMV Building Map"
+          ></iframe>
+        )}
+        
+        {selectedBuilding === "gdn" && (
+          <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.0340155183208!2d79.15225897358894!3d12.969675214923484!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bad47a00884377f%3A0x6319afd49269257!2sG.D.%20Naidu!5e0!3m2!1sen!2sin!4v1743599130841!5m2!1sen!2sin"
+          width = "723"            
+          height="450"
+            className="border-0 rounded-lg shadow-lg"
+            loading="lazy"
+            title="GDN Building Map"
+          ></iframe>
+        )}
+        
+        {selectedBuilding === "cdmm" && (
+          <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.0423110430615!2d79.15259317358894!3d12.96914441493512!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bad479ffe157aa9%3A0xde4dac507e8e9508!2sCentre%20For%20Disaster%20Mitigation%20And%20Management!5e0!3m2!1sen!2sin!4v1743599093897!5m2!1sen!2sin"            
+          width="723"            
+            height="450"
+            className="border-0 rounded-lg shadow-lg"
+            loading="lazy"
+            title="CDMM Building Map"
+          ></iframe>
+        )}
+        
+        {/* Fallback iframe for when no building is selected or an unknown building is selected */}
+        {!["smv", "gdn", "cdmm"].includes(selectedBuilding) && (
+          <div className="text-center">
+            <p className="text-gray-400 mb-2">Select a building to view its location</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
                 <div>
                   <h3 className="text-lg font-medium mb-2">Internal Navigation</h3>
                   <div className="aspect-video bg-gray-800 rounded-lg p-4">

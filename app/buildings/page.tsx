@@ -1,5 +1,14 @@
+"use client";
+
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
+import { useState, useEffect } from "react"
+
+// Helper function to get image URLs with fallbacks
+function getBuildingImageUrl(buildingId: string): string {
+  // Use the actual image paths from your public directory
+  return `/images/buildings/${buildingId}.jpg`;
+}
 
 export default function BuildingsPage() {
   const buildings = [
@@ -10,6 +19,7 @@ export default function BuildingsPage() {
       description: "Houses research labs, faculty cabins, and conference rooms focused on disaster management studies.",
       facilities: ["Research Labs", "Conference Rooms", "Faculty Cabins", "GIS Lab"],
       floors: 4,
+      imageLoaded: false,
     },
     {
       id: "gdn",
@@ -19,6 +29,7 @@ export default function BuildingsPage() {
         "Home to engineering labs, workshops, and classrooms for mechanical and civil engineering departments.",
       facilities: ["Engineering Labs", "Workshops", "Classrooms", "Research Centers"],
       floors: 2,
+      imageLoaded: false,
     },
     {
       id: "smv",
@@ -28,8 +39,26 @@ export default function BuildingsPage() {
         "Houses biotechnology labs, research facilities, and classrooms for life sciences and biotechnology.",
       facilities: ["Biotechnology Labs", "Research Labs", "Classrooms", "Auditoriums"],
       floors: 4,
+      imageLoaded: false,
     },
   ]
+
+  // Track which images have loaded successfully
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+
+  // Preload all building images
+  useEffect(() => {
+    buildings.forEach(building => {
+      const img = new Image();
+      img.src = getBuildingImageUrl(building.id);
+      img.onload = () => {
+        setLoadedImages(prev => ({
+          ...prev,
+          [building.id]: true
+        }));
+      };
+    });
+  }, []);
 
   return (
     <div className="container px-4 md:px-6 py-12">
@@ -42,8 +71,14 @@ export default function BuildingsPage() {
               <div className="h-48 bg-gray-800 relative overflow-hidden">
                 <div
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-                  style={{ backgroundImage: `url('/placeholder.svg?height=400&width=600&text=${building.name}')` }}
+                  style={{ backgroundImage: `url('${getBuildingImageUrl(building.id)}')` }}
                 />
+                {/* Overlay text if image fails */}
+                {!loadedImages[building.id] && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900">
+                    <span className="text-white text-xl font-bold">{building.name}</span>
+                  </div>
+                )}
               </div>
               <div className="p-6">
                 <h2 className="text-2xl font-bold mb-2">{building.name}</h2>
@@ -71,4 +106,3 @@ export default function BuildingsPage() {
     </div>
   )
 }
-

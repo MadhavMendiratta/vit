@@ -4,8 +4,15 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getBuildingData } from "@/lib/buildings"
 
-export default function BuildingPage({ params }: { params: { id: string } }) {
-  const buildingId = params.id
+// Helper function to get the proper image path for a building
+function getBuildingImagePath(buildingId: string): string {
+  // Using lowercase building ID to match your file naming convention
+  return `/images/buildings/${buildingId.toLowerCase()}.jpg`;
+}
+
+export default async function BuildingPage({ params }: { params: { id: string } }) {
+  // Fixed: Properly await the params object before accessing its properties
+  const buildingId = (await params).id
   const building = getBuildingData(buildingId)
 
   if (!building) {
@@ -22,6 +29,9 @@ export default function BuildingPage({ params }: { params: { id: string } }) {
     )
   }
 
+  // Get the correct image path for this building
+  const buildingImagePath = getBuildingImagePath(buildingId);
+
   return (
     <div className="container px-4 md:px-6 py-12">
       <div className="mb-8">
@@ -35,8 +45,40 @@ export default function BuildingPage({ params }: { params: { id: string } }) {
           <div className="h-[300px] md:h-[400px] bg-gray-800 rounded-lg mb-6 relative overflow-hidden">
             <div
               className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url('/placeholder.svg?height=800&width=1200&text=${building.name}')` }}
+              style={{ 
+                backgroundImage: `url('${buildingImagePath}')`,
+                // Fallback if image fails to load
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}
             />
+            {/* Fallback overlay text that only shows if image fails to load */}
+            <div 
+              id="image-fallback"
+              className="absolute inset-0 flex items-center justify-center bg-gray-800/90 opacity-0 transition-opacity duration-300"
+              style={{
+                // This script makes the fallback text visible only if the image fails
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <script dangerouslySetInnerHTML={{
+                __html: `
+                  document.addEventListener('DOMContentLoaded', () => {
+                    const img = new Image();
+                    img.src = '${buildingImagePath}';
+                    img.onerror = () => {
+                      document.getElementById('image-fallback').style.opacity = '1';
+                    };
+                  });
+                `
+              }} />
+              <div className="text-center p-6">
+                <h3 className="text-3xl font-bold text-white mb-2">{building.name}</h3>
+                <p className="text-xl text-gray-300">{building.fullName}</p>
+              </div>
+            </div>
           </div>
         </div>
         <div className="bg-gray-900 p-6 rounded-lg">
@@ -218,4 +260,3 @@ export default function BuildingPage({ params }: { params: { id: string } }) {
     </div>
   )
 }
-

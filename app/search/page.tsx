@@ -1,9 +1,8 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { ArrowLeft, Building, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,8 +18,11 @@ type SearchResult = {
   department: string
 }
 
-export default function SearchPage({ searchParams }: { searchParams: { q?: string } }) {
-  const initialQuery = searchParams.q || ""
+export default function SearchPage() {
+  // Use the useSearchParams hook instead of accessing props directly
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q") || "";
+  
   const [query, setQuery] = useState(initialQuery)
   const [results, setResults] = useState<SearchResult[]>([])
   const [suggestions, setSuggestions] = useState<string[]>([])
@@ -217,4 +219,3 @@ export default function SearchPage({ searchParams }: { searchParams: { q?: strin
     </div>
   )
 }
-

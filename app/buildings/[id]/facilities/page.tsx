@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getBuildingData, isImportantRoom } from "@/lib/buildings"
 
-export default function BuildingFacilitiesPage({
+export default async function BuildingFacilitiesPage({
   params,
   searchParams,
 }: {
@@ -70,9 +70,9 @@ export default function BuildingFacilitiesPage({
 
       <h1 className="text-3xl font-bold mb-8">{building.name} Facilities</h1>
 
-      <p className="text-gray-400 mb-8">
+      {/* <p className="text-gray-400 mb-8">
         Showing 10 key facilities. Use the navigation section to access all facilities.
-      </p>
+      </p> */}
 
       {highlightedRoom && (
         <div className="mb-8 p-4 bg-primary/20 border border-primary/30 rounded-lg">
@@ -136,4 +136,3 @@ export default function BuildingFacilitiesPage({
     </div>
   )
 }
-
